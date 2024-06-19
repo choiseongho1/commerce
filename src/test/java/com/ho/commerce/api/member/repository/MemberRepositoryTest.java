@@ -1,9 +1,12 @@
 package com.ho.commerce.api.member.repository;
 
 import com.ho.commerce.api.member.domain.Member;
+import com.ho.commerce.api.member.domain.MemberRole;
 import com.ho.commerce.api.member.dto.MemberSaveDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 
 @Transactional
@@ -26,12 +31,11 @@ public class MemberRepositoryTest {
 
     @Test
     @DisplayName("사용자가 DB에 정상적으로 저장이 되는지 저장")
-    void saveUser(){
+    void saveMember(){
         // given
         MemberSaveDto memberSaveDto = MemberSaveDto.builder()
                 .name("name")
                 .password("password")
-                .role("admin")
                 .build();
 
         Member member = memberSaveDto.toEntity();
@@ -41,5 +45,28 @@ public class MemberRepositoryTest {
 
         // then
         Assertions.assertEquals(saveMember.getName(), member.getName());
+    }
+
+
+    @Test
+    @DisplayName("사용자의 정보 저장 시 CreatedAt 등 기본 정보가 저장되는지 확인 ")
+    void saveMemberJpaAuditing(){
+        // given
+        MemberSaveDto memberSaveDto = MemberSaveDto.builder()
+                .name("name")
+                .password("password")
+                .role("ADMIN")
+                .build();
+
+        Member member = memberSaveDto.toEntity();
+
+        // when
+        Member saveMember = userRepository.save(member);
+
+        // then
+        Assertions.assertTrue(!Objects.isNull(saveMember.getCreatedDate()));
+        Assertions.assertTrue(!Objects.isNull(saveMember.getCreateBy()));
+        Assertions.assertTrue(!Objects.isNull(saveMember.getLastModifedBy()));
+        Assertions.assertTrue(!Objects.isNull(saveMember.getModifiedDate()));
     }
 }

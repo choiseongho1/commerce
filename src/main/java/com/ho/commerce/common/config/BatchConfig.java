@@ -1,4 +1,4 @@
-package com.ho.commerce.config;
+package com.ho.commerce.common.config;
 
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.context.annotation.Configuration;

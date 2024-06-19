@@ -1,0 +1,17 @@
+#version: "3.8"
+services :
+  commerce-database:
+    container_name: commerce-database
+    build :
+      dockerfile: Dockerfile
+      context: ./database
+    image: 95csh178/commerce-database
+    environment:
+      - MARIADB_DATABASE=commerce
+      - MARIADB_ROOT_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+

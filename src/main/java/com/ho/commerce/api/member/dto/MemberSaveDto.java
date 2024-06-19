@@ -1,6 +1,7 @@
 package com.ho.commerce.api.member.dto;
 
 import com.ho.commerce.api.member.domain.Member;
+import com.ho.commerce.api.member.domain.MemberRole;
 import lombok.*;
 
 @Builder
@@ -9,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor @AllArgsConstructor
 public class MemberSaveDto {
 
-    private Long id;
+    private String memberId;
     private String name;
     private String password;
     private String role; // 관리자, 판매자, 사용자

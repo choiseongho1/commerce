@@ -36,6 +36,10 @@ dependencies {
 
 
     runtimeOnly 'com.h2database:h2'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation 'org.apache.commons:commons-lang3:3.0'
+
 }
 
 tasks.named('test') {

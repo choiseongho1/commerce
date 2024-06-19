@@ -1,4 +1,4 @@
-package com.ho.commerce.entity;
+package com.ho.commerce.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 public abstract class BaseTimeEntity {
 
     // Entity가 생성되어 저장될 때 시간이 자동 저장됩니다.
@@ -28,9 +29,9 @@ public abstract class BaseTimeEntity {
     //등록자
     @CreatedBy
     @Column(updatable = false)
-    protected Long createBy;
+    protected String createBy;
 
     //수정자
     @LastModifiedBy
-    protected Long lastModifedBy;
+    protected String lastModifedBy;
 }
