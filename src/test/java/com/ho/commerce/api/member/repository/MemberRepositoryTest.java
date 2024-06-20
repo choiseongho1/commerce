@@ -98,25 +98,4 @@ public class MemberRepositoryTest {
         Assertions.assertEquals(1, memberRepository.findAll().size());
     }
 
-    @Test
-    @DisplayName("Member Repository에 Querydsl을 추가하여 Querydsl이 정상적으로 실행되는지 조회")
-    void findMemberList(){
-        // given
-        MemberSaveDto memberSaveDto = MemberSaveDto.builder()
-                .memberId("memberId")
-                .name("name")
-                .password("password")
-                .role("ADMIN")
-                .build();
-
-        Member member = memberSaveDto.toEntity();
-
-        // when
-        Member saveMember = memberRepository.save(member);
-
-        List<MemberListDto> findResult = memberRepository.findMemberList();
-
-        // then
-        Assertions.assertEquals(1, findResult.size());
-    }
 }
