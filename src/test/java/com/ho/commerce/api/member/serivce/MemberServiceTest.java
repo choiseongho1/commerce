@@ -1,6 +1,7 @@
 package com.ho.commerce.api.member.serivce;
 
 import com.ho.commerce.api.member.domain.Member;
+import com.ho.commerce.api.member.dto.MemberSaveDto;
 import com.ho.commerce.api.member.repository.MemberRepository;
 import com.ho.commerce.common.exception.CustomException;
 import org.junit.jupiter.api.Assertions;
@@ -45,6 +46,74 @@ public class MemberServiceTest {
         CustomException exception = assertThrows(CustomException.class, () -> {
             if (opMember.isPresent()) {
                 throw new CustomException("이미 존재하는 회원ID입니다.");
+            }
+        });
+
+        // Optionally, you can assert the exception message if needed
+        assertEquals("이미 존재하는 회원ID입니다.", exception.getMessage());
+    }
+
+
+    @Test
+    @DisplayName("(성공)일반 사용자가 회원가입을 한다.")
+    public void createMemberBySuccess(){
+        // given
+        MemberSaveDto memberSaveDto = MemberSaveDto.builder()
+                .memberId("userId")
+                .name("name")
+                .password("password")
+                .role("USER")
+                .build();
+
+        Member member = memberSaveDto.toEntity();
+
+        // when
+        Member saveMember = memberRepository.save(member);
+
+
+        // then
+        // 회원가입이 정상적으로 이루어졌는지 확인하기
+        assertEquals("userId", saveMember.getMemberId());
+
+        // 권한이 UESR로 저장되었는지 확인하기
+        assertEquals("USER", saveMember.getRole());
+    }
+
+    @Test
+    @DisplayName("(실패)일반 사용자가 회원가입을 한다.")
+    public void createMemberByFail(){
+        // given
+        MemberSaveDto memberSaveDto = MemberSaveDto.builder()
+                .memberId("userId")
+                .name("name")
+                .password("password")
+                .role("USER")
+                .build();
+
+        Member member = memberSaveDto.toEntity();
+        memberRepository.save(member);
+
+        // given
+        MemberSaveDto newMemberDto = MemberSaveDto.builder()
+                .memberId("userId")
+                .name("newMember")
+                .password("password")
+                .role("USER")
+                .build();
+
+        // when
+
+        Member saveMember = null;
+        Optional<Member> opMember = memberRepository.findById(newMemberDto.getMemberId());
+
+
+        // Use assertThrows to verify that CustomException is thrown
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            if (opMember.isPresent()) {
+                throw new CustomException("이미 존재하는 회원ID입니다.");
+            }else{
+                Member newMember = memberSaveDto.toEntity();
+                memberRepository.save(newMember);
             }
         });
 

@@ -2,6 +2,7 @@ package com.ho.commerce.api.member.repository;
 
 import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.domain.MemberRole;
+import com.ho.commerce.api.member.dto.MemberListDto;
 import com.ho.commerce.api.member.dto.MemberSaveDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,6 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -27,13 +29,14 @@ import java.util.Objects;
 public class MemberRepositoryTest {
 
     @Autowired
-    private MemberRepository userRepository;
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("사용자가 DB에 정상적으로 저장이 되는지 저장")
     void saveMember(){
         // given
         MemberSaveDto memberSaveDto = MemberSaveDto.builder()
+                .memberId("memberId")
                 .name("name")
                 .password("password")
                 .build();
@@ -41,7 +44,7 @@ public class MemberRepositoryTest {
         Member member = memberSaveDto.toEntity();
 
         // when
-        Member saveMember = userRepository.save(member);
+        Member saveMember = memberRepository.save(member);
 
         // then
         Assertions.assertEquals(saveMember.getName(), member.getName());
@@ -53,6 +56,7 @@ public class MemberRepositoryTest {
     void saveMemberJpaAuditing(){
         // given
         MemberSaveDto memberSaveDto = MemberSaveDto.builder()
+                .memberId("memberId")
                 .name("name")
                 .password("password")
                 .role("ADMIN")
@@ -61,12 +65,58 @@ public class MemberRepositoryTest {
         Member member = memberSaveDto.toEntity();
 
         // when
-        Member saveMember = userRepository.save(member);
+        Member saveMember = memberRepository.save(member);
 
         // then
         Assertions.assertTrue(!Objects.isNull(saveMember.getCreatedDate()));
         Assertions.assertTrue(!Objects.isNull(saveMember.getCreateBy()));
         Assertions.assertTrue(!Objects.isNull(saveMember.getLastModifedBy()));
         Assertions.assertTrue(!Objects.isNull(saveMember.getModifiedDate()));
+    }
+
+    @Test
+    @DisplayName("Member Entity에 Persistable을 추가하여 isNew처리가 되는지 확인 ")
+    void memberPersistable(){
+        // given
+        MemberSaveDto memberSaveDto = MemberSaveDto.builder()
+                .memberId("memberId")
+                .name("name")
+                .password("password")
+                .role("ADMIN")
+                .build();
+
+        Member member = memberSaveDto.toEntity();
+
+        // when
+        Member saveMember = memberRepository.save(member);
+
+        saveMember.setName("newName");
+        Member newSaveMember = memberRepository.save(saveMember);
+
+        // then
+        Assertions.assertEquals("newName", newSaveMember.getName());
+        Assertions.assertEquals(1, memberRepository.findAll().size());
+    }
+
+    @Test
+    @DisplayName("Member Repository에 Querydsl을 추가하여 Querydsl이 정상적으로 실행되는지 조회")
+    void findMemberList(){
+        // given
+        MemberSaveDto memberSaveDto = MemberSaveDto.builder()
+                .memberId("memberId")
+                .name("name")
+                .password("password")
+                .role("ADMIN")
+                .build();
+
+        Member member = memberSaveDto.toEntity();
+
+        // when
+        Member saveMember = memberRepository.save(member);
+
+        List<MemberListDto> findResult = memberRepository.findMemberList();
+
+        // then
+        Assertions.assertEquals(1, findResult.size());
     }
 }
