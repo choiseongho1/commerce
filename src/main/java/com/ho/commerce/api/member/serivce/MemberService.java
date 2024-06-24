@@ -48,7 +48,7 @@ public class MemberService {
             throw new CustomException("이미 존재하는 회원ID입니다.");
         }else{
             // 20240624 SHA256 단방향 암호화
-            String encoderPwd = EncoderUtils.SHA256Decode(saveMember.getPassword());
+            String encoderPwd = EncoderUtils.SHA256Decode(memberSaveDto.getPassword());
             memberSaveDto.setPassword(encoderPwd);
 
             Member member = memberSaveDto.toEntity();

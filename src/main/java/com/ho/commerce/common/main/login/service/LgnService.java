@@ -30,6 +30,8 @@ public class LgnService {
         Optional<Member> opMember = memberRepository.findById(memberId);
 
         String encoderPwd = EncoderUtils.SHA256Decode(password);
+        lgnDto.setPassword(encoderPwd);
+
         if(opMember.isEmpty()) throw new CustomException("회원 ID가 존재하지 않습니다.");
 
         if(!StringUtils.equals(encoderPwd, opMember.get().getPassword())) {
