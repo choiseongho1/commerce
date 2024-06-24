@@ -4,8 +4,6 @@ import com.ho.commerce.api.order.domain.Order;
 import com.ho.commerce.api.product.domain.Product;
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-
 @Entity
 public class OrderItem {
 
@@ -21,7 +19,7 @@ public class OrderItem {
     @JoinColumn(name = "productId")
     private Product product;
 
-    private int quantity;
-    private BigDecimal unitPrice;
+    private Integer quantity;
+    private Integer unitPrice;
 
 }

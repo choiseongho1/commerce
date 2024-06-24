@@ -1,12 +1,12 @@
 package com.ho.commerce.api.product.domain;
 
-import com.ho.commerce.api.member.domain.Member;
-import com.ho.commerce.api.option.domain.Option;
-import com.ho.commerce.api.optiongroup.domain.OptionGroup;
-import com.ho.commerce.api.productaddon.domain.ProductAddon;
+
+import com.ho.commerce.api.category.domain.Category;
+import com.ho.commerce.api.orderitem.OrderItem;
 import com.ho.commerce.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.domain.Persistable;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Product extends BaseTimeEntity {
+public class Product  extends BaseTimeEntity implements Persistable<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,17 +25,28 @@ public class Product extends BaseTimeEntity {
     private String name;
     private String description;
     private Integer price;
+    private Integer stockQuantity;
+    private String delYn;
 
     @ManyToOne
-    @JoinColumn(name = "SELLER_ID")
-    private Member seller;
+    @JoinColumn(name = "categoryId")
+    private Category category;
 
     @OneToMany(mappedBy = "product")
-    private List<Option> options;
+    private List<OrderItem> orderItems;
 
-    @OneToMany(mappedBy = "product")
-    private List<OptionGroup> optionGroups;
+    @PrePersist // 새로운 엔티티에 대해 Persist가 호출 되기 전
+    public void setPrePersist() {
+        this.delYn = "N";
+    }
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductAddon> productAddons;
+    @Override
+    public Long getId() {
+        return this.productId;
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.getCreatedDate() == null;
+    }
 }

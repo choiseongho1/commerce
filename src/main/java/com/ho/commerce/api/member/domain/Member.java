@@ -18,6 +18,9 @@ public class Member extends BaseTimeEntity implements Persistable<String>{
     private String name;
     private String password;
     private String role; // 관리자, 판매자, 사용자
+    private String email;
+    private String authKey; // 이메일 인증 키
+    private boolean isEmailVerified; // 이메일 인증 여부
 
     /* 20240620 전화번호, 주소 추가 */
     private String moblNo;

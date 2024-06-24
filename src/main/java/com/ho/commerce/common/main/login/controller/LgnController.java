@@ -51,4 +51,6 @@ public class LgnController {
         memberService.createMemberInfo(memberSaveDto);
         return new ResponseEntity<>(memberSaveDto.getMemberId(), HttpStatus.CREATED);
     }
+
+
 }
