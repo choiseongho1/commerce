@@ -26,11 +26,15 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/api/v1/member").permitAll()
+                        .requestMatchers("/api/v1/member/valid/**").hasAuthority("ROLE_ADMIN")
+//                        .requestMatchers("**/seller/**").hasAuthority("SELLER")
+//                        .requestMatchers("**/user/**").hasAuthority("USER")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

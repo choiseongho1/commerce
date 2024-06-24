@@ -4,6 +4,7 @@ import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.dto.MemberSaveDto;
 import com.ho.commerce.api.member.repository.MemberRepository;
 import com.ho.commerce.common.exception.CustomException;
+import com.ho.commerce.common.utils.EncoderUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,10 @@ public class MemberService {
         if(opMember.isPresent()) {
             throw new CustomException("이미 존재하는 회원ID입니다.");
         }else{
+            // 20240624 SHA256 단방향 암호화
+            String encoderPwd = EncoderUtils.SHA256Decode(saveMember.getPassword());
+            memberSaveDto.setPassword(encoderPwd);
+
             Member member = memberSaveDto.toEntity();
             saveMember = memberRepository.save(member);
         }

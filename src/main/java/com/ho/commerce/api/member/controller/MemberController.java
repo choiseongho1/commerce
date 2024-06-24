@@ -15,27 +15,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    /**
-     * 사용자로부터 MemberId를 입력받아 해당 아이디가 사용가능한지 확인하는 controller
-     * @param memberId
-     * @return ResponseEntity<Boolean>
-     */
-    @GetMapping("/valid/{memberId}")
-    public ResponseEntity<Boolean> searchIsExistMemberId(@PathVariable String memberId){
-        boolean useMemberId = memberService.searchIsExistMemberId(memberId);
-        return new ResponseEntity<>(useMemberId, HttpStatus.OK);
-    }
 
-    /**
-     * 사용자로부터 정보를 입력받아 해당 정보로 회원 가입을 한다.
-     * @param memberSaveDto
-     * @return
-     */
-    @PostMapping
-    public ResponseEntity<String> createMemberInfo(@RequestBody MemberSaveDto memberSaveDto){
-        memberService.createMemberInfo(memberSaveDto);
-        return new ResponseEntity<>(memberSaveDto.getMemberId(), HttpStatus.CREATED);
-    }
 
 
 }

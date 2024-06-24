@@ -1,7 +1,6 @@
 package com.ho.commerce.api.member.dto;
 
 import com.ho.commerce.api.member.domain.Member;
-import com.ho.commerce.api.member.domain.MemberRole;
 import lombok.*;
 
 @Builder

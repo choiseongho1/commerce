@@ -1,25 +1,15 @@
 package com.ho.commerce.api.member.repository;
 
 import com.ho.commerce.api.member.domain.Member;
-import com.ho.commerce.api.member.domain.MemberRole;
-import com.ho.commerce.api.member.dto.MemberListDto;
 import com.ho.commerce.api.member.dto.MemberSaveDto;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 
