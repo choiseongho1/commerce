@@ -28,4 +28,5 @@ public class AdminCategoryController {
         Long categoryId = categoryService.createCategory(categorySaveDto);
         return new ResponseEntity<>(categoryId, HttpStatus.CREATED);
     }
+
 }
