@@ -16,6 +16,7 @@ public class ProductSaveDto {
     private Integer price;
     private Integer stockQuantity;
     private Long categoryId;
+    private String memberId;
 
     public Product toEntity(){
         return Product.builder()

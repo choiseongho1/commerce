@@ -2,6 +2,8 @@ package com.ho.commerce.api.product.service;
 
 import com.ho.commerce.api.category.domain.Category;
 import com.ho.commerce.api.category.repository.CategoryRepository;
+import com.ho.commerce.api.member.domain.Member;
+import com.ho.commerce.api.member.repository.MemberRepository;
 import com.ho.commerce.api.product.domain.Product;
 import com.ho.commerce.api.product.dto.ProductSaveDto;
 import com.ho.commerce.api.product.repository.ProductRepository;
@@ -24,19 +26,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ProductServiceTest {
 
     @Autowired
-    private ProductService productService;
-
-    @Autowired
     private CategoryRepository categoryRepository;
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
 
     @Test
     @DisplayName("Seller가 올바른 카테고리로 제품을 등록하는 경우")
     public void testCreateProductBySeller_ValidCategory() {
         // given
+
+        Member member = Member.builder()
+                .memberId("memberId")
+                .name(" A")
+                .build();
+
+        Member saveMember = memberRepository.save(member);
+
         Category category = Category.builder()
                 .name("Category A")
                 .build();
@@ -46,9 +56,16 @@ class ProductServiceTest {
         ProductSaveDto productSaveDto = ProductSaveDto.builder()
                 .name("Product A")
                 .categoryId(saveCategory.getCategoryId())
+                .memberId(saveMember.getMemberId())
                 .build();
 
         Product product = productSaveDto.toEntity();
+
+        // 사용자의 Member 정보를 조회한다.
+        Member findMember = memberRepository.findById(productSaveDto.getMemberId()).orElseThrow();
+
+        product.setMember(findMember);
+
 
         // 사용자가 선택한 category 정보를 조회한다.
         Category findCategory = categoryRepository.findById(productSaveDto.getCategoryId()).orElseThrow();

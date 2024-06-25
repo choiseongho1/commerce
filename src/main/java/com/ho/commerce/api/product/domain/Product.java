@@ -2,6 +2,7 @@ package com.ho.commerce.api.product.domain;
 
 
 import com.ho.commerce.api.category.domain.Category;
+import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.orderitem.OrderItem;
 import com.ho.commerce.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -34,6 +35,10 @@ public class Product  extends BaseTimeEntity implements Persistable<Long> {
 
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orderItems;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private Member member;
 
     @PrePersist // 새로운 엔티티에 대해 Persist가 호출 되기 전
     public void setPrePersist() {
