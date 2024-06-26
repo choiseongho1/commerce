@@ -35,14 +35,38 @@ class ProductServiceTest {
     private MemberRepository memberRepository;
 
 
+    // Product 저장 메소드 추가
+    private Product defaultSaveProduct(){
+        Member member = Member.builder()
+                .memberId("memberId")
+                .name(" A")
+                .build();
+        Member saveMember = memberRepository.save(member);
+
+        Category category = Category.builder()
+                .name("Category A")
+                .build();
+        Category saveCategory = categoryRepository.save(category);
+
+        Product product = Product.builder()
+                .name("Product A")
+                .category(saveCategory)
+                .member(saveMember)
+                .build();
+
+        return productRepository.save(product);
+    }
+
+
+
+
     @Test
     @DisplayName("Seller가 올바른 카테고리로 제품을 등록하는 경우")
     public void testCreateProductBySeller_ValidCategory() {
         // given
-
         Member member = Member.builder()
                 .memberId("memberId")
-                .name(" A")
+                .name("A")
                 .build();
 
         Member saveMember = memberRepository.save(member);
@@ -108,5 +132,42 @@ class ProductServiceTest {
         // then
         assertEquals("올바른 Category정보가 아닙니다.", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("판매자(Seller)가 상품정보를 수정한다.")
+    void updateProductBySeller_Valid(){
+        // given
+        Product product = defaultSaveProduct();
+
+        ProductSaveDto productSaveDto = ProductSaveDto.builder()
+                .productId(product.getProductId())
+                .name("Product B")
+                .categoryId(product.getCategory().getCategoryId())
+                .build();
+
+        Optional<Product> opProduct = productRepository.findById(productSaveDto.getProductId());
+
+        if(opProduct.isEmpty()) throw new CustomException("올바른 상품정보가 존재하지 않습니다.");
+
+        Product findProduct = opProduct.get();
+        productSaveDto.toEntity(findProduct);
+
+        if(!productSaveDto.getCategoryId().equals(findProduct.getCategory().getCategoryId())){
+
+            // 사용자가 선택한 category 정보를 조회한다.
+            Optional<Category> opCategory = categoryRepository.findById(productSaveDto.getCategoryId());
+            if(opCategory.isEmpty()) throw new CustomException("올바른 Category정보가 아닙니다.");
+            Category findCategory = opCategory.orElseThrow();
+
+            findProduct.setCategory(findCategory);
+        }
+
+        // when
+        Product saveProduct = productRepository.save(findProduct);
+
+        // then
+        Assertions.assertEquals(saveProduct.getName(), "Product B");
+    }
+
 
 }

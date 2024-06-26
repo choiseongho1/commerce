@@ -14,35 +14,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/seller/api/v1/product")
+@RequestMapping("/user/api/v1/product")
 @RequiredArgsConstructor
-public class SellerProductController {
+public class UserProductController {
 
     private final ProductService productService;
-
-    /**
-     * 판매자(Seller)가 상품(Product)를 등록한다.
-     * @param productSaveDto
-     * @return Long ProductId
-     */
-    @PostMapping
-    public ResponseEntity<Long> createProductBySeller(@RequestBody ProductSaveDto productSaveDto){
-
-        Long productId = productService.createProductBySeller(productSaveDto);
-        return new ResponseEntity<>(productId, HttpStatus.CREATED);
-    }
-
-    /**
-     * 판매자(Seller)가 상품(Product)를 수정한다.
-     * @param productSaveDto
-     * @return Long ProductId
-     */
-    @PutMapping
-    public ResponseEntity<Long> updateProductBySeller(@RequestBody ProductSaveDto productSaveDto){
-
-        Long productId = productService.updateProductBySeller(productSaveDto);
-        return new ResponseEntity<>(productId, HttpStatus.CREATED);
-    }
 
     /**
      * 판매자(Seller)가 등록한 상품(Product)목록을 조회한다.

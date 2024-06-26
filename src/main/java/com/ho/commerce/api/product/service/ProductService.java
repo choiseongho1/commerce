@@ -55,6 +55,38 @@ public class ProductService {
     }
 
     /**
+     * 판매자(Seller)가 상품(Product)를 수정한다.
+     * - category 정보가 올바르지 않은 경우 Exception
+     * - 상품(product) 정보가 올바르지 않은 경우 Exception
+     * @param productSaveDto
+     * @return
+     */
+    /*----------------- Seller ------------------*/
+    public Long updateProductBySeller(ProductSaveDto productSaveDto){
+
+        Optional<Product> opProduct = productRepository.findById(productSaveDto.getProductId());
+
+        if(opProduct.isEmpty()) throw new CustomException("올바른 상품정보가 존재하지 않습니다.");
+
+
+        Product findProduct = opProduct.get();
+        productSaveDto.toEntity(findProduct);
+
+        if(!productSaveDto.getCategoryId().equals(findProduct.getCategory().getCategoryId())){
+
+            // 사용자가 선택한 category 정보를 조회한다.
+            Optional<Category> opCategory = categoryRepository.findById(productSaveDto.getCategoryId());
+            if(opCategory.isEmpty()) throw new CustomException("올바른 Category정보가 아닙니다.");
+            Category findCategory = opCategory.orElseThrow();
+
+            findProduct.setCategory(findCategory);
+        }
+
+        Product saveProduct = productRepository.save(findProduct);
+        return saveProduct.getProductId();
+    }
+
+    /**
      * 판매자(Seller)가 등록한 상품(Product)의 목록을 조회한다.
      * @param productCondDto 
      * @return

@@ -27,4 +27,13 @@ public class ProductSaveDto {
                 .build();
     }
 
+    public void toEntity(Product product){
+        if( product == null ) return;
+
+        product.setName(this.name);
+        product.setDescription(this.description);
+        product.setPrice(this.price);
+        product.setStockQuantity(this.price);
+    }
+
 }

@@ -19,6 +19,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(lgnInfoDto.getMemberId())
                 .claim("role", lgnInfoDto.getRole())
+                .claim("memberId", lgnInfoDto.getMemberId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
