@@ -37,4 +37,23 @@ public class ProductDslRepositoryImpl implements ProductDslRepository {
                 )
                 .fetch();
     }
+
+    public List<ProductListDto> findProductListByUser(ProductCondDto productCondDto){
+        return queryFactory
+                .select(
+                        new QProductListDto(
+                                product.productId,
+                                product.name,
+                                product.description,
+                                product.price,
+                                product.stockQuantity,
+                                product.category.categoryId
+                        )
+                )
+                .from(product)
+                .where(
+                        QuerydslUtil.eq(product.category.categoryId, productCondDto.getCategoryId())
+                )
+                .fetch();
+    }
 }

@@ -6,6 +6,7 @@ import com.ho.commerce.common.exception.CustomException;
 import com.ho.commerce.common.jwt.JwtUtil;
 import com.ho.commerce.common.main.login.dto.LgnDto;
 import com.ho.commerce.common.main.login.dto.LgnInfoDto;
+import com.ho.commerce.common.main.login.dto.LgnResultDto;
 import com.ho.commerce.common.utils.EncoderUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,7 @@ public class LgnService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public String login(LgnDto lgnDto) {
+    public LgnResultDto login(LgnDto lgnDto) {
 
         String memberId = lgnDto.getMemberId();
         String password = lgnDto.getPassword();
@@ -40,7 +41,17 @@ public class LgnService {
 
         LgnInfoDto lgnInfoDto = memberRepository.findMemberByLgn(lgnDto);
 
-        return jwtUtil.createAccessToken(lgnInfoDto);
+        String loginToken = jwtUtil.createAccessToken(lgnInfoDto);
+
+        LgnResultDto resultDto = LgnResultDto.builder()
+                .memberId(lgnInfoDto.getMemberId())
+                .name(lgnInfoDto.getName())
+                .moblNo(lgnInfoDto.getMoblNo())
+                .addr(lgnInfoDto.getAddr())
+                .loginToken(loginToken)
+                .build();
+
+        return resultDto;
 
     }
 

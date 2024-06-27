@@ -55,4 +55,12 @@ public class SellerProductController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Object> deleteProductBySeller(@PathVariable Long productId){
+        productService.deleteProductBySeller(productId);
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+
 }

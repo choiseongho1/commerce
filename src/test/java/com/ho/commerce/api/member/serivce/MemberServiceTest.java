@@ -1,10 +1,11 @@
 package com.ho.commerce.api.member.serivce;
 
+import com.ho.commerce.api.cart.domain.Cart;
+import com.ho.commerce.api.cart.repository.CartRepository;
 import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.dto.MemberSaveDto;
 import com.ho.commerce.api.member.repository.MemberRepository;
 import com.ho.commerce.common.exception.CustomException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class MemberServiceTest {
 
     @Autowired MemberRepository memberRepository;
-
+    @Autowired CartRepository cartRepository;
 
     @Test
     @DisplayName("아이디 중복을 확인하는 메소드")
@@ -119,6 +120,32 @@ public class MemberServiceTest {
 
         // Optionally, you can assert the exception message if needed
         assertEquals("이미 존재하는 회원ID입니다.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("(성공)일반 사용자가 회원가입시 장바구니(Cart)가 생성되는지 확인한다.")
+    public void createMemberWithCart(){
+        // given
+        MemberSaveDto memberSaveDto = MemberSaveDto.builder()
+                .memberId("userId")
+                .name("name")
+                .password("password")
+                .role("USER")
+                .build();
+
+        Member member = memberSaveDto.toEntity();
+
+        // when
+        Member saveMember = memberRepository.save(member);
+
+        Cart saveCart = cartRepository.save(Cart.builder().member(saveMember).build());
+
+        // then
+        // 회원가입이 정상적으로 이루어졌는지 확인하기
+        assertEquals("userId", saveMember.getMemberId());
+
+        // 장바구니가 정상적으로 생성되었는지 확인하기
+        assertFalse(Objects.isNull(saveCart.getCartId()));
     }
 
 }

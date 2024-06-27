@@ -1,5 +1,7 @@
 package com.ho.commerce.api.member.serivce;
 
+import com.ho.commerce.api.cart.domain.Cart;
+import com.ho.commerce.api.cart.repository.CartRepository;
 import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.dto.MemberSaveDto;
 import com.ho.commerce.api.member.repository.MemberRepository;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final CartRepository cartRepository;
 
     /**
      * 회원가입시 memberId 존재 여부를 확인한다.
@@ -54,6 +57,13 @@ public class MemberService {
             Member member = memberSaveDto.toEntity();
             saveMember = memberRepository.save(member);
         }
+
+        // 사용자의 역할이 USER인 경우 장바구니(CART) 만들어주기
+        if(memberSaveDto.getRole().equals("USER")){
+            cartRepository.save(Cart.builder().member(saveMember).build());
+        }
+
+
         return saveMember.getMemberId();
     }
 

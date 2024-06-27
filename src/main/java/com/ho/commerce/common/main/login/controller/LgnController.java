@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ho.commerce.api.member.dto.MemberSaveDto;
 import com.ho.commerce.api.member.serivce.MemberService;
 import com.ho.commerce.common.main.login.dto.LgnDto;
+import com.ho.commerce.common.main.login.dto.LgnResultDto;
 import com.ho.commerce.common.main.login.service.LgnService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,10 @@ public class LgnController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LgnDto lgnDto) throws JsonProcessingException {
-        String token  = lgnService.login(lgnDto);
+    public ResponseEntity<Object> login(@RequestBody LgnDto lgnDto) throws JsonProcessingException {
+        LgnResultDto result = lgnService.login(lgnDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**

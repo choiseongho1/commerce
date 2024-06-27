@@ -93,10 +93,31 @@ public class ProductService {
      */
     public List<ProductListDto> findProductListBySeller(ProductCondDto productCondDto){
         return productRepository.findProductListBySeller(productCondDto);
+    }
 
+    /**
+     * 판매자(Seller)가 상품(Product)를 삭제한다.
+     * - 상품(product) 정보가 올바르지 않은 경우 Exception
+     * @param Long productId
+     */
+    /*----------------- Seller ------------------*/
+    public void deleteProductBySeller(Long productId){
+
+        Optional<Product> opProduct = productRepository.findById(productId);
+
+        if(opProduct.isEmpty()) throw new CustomException("올바른 상품정보가 존재하지 않습니다.");
+
+        productRepository.delete(opProduct.orElseThrow());
     }
 
 
-
     /*----------------- User ------------------*/
+    /**
+     * 사용자(USER)는 등록된 상품(Product)목록을 조회한다.
+     * @param ProductCondDto productCondDto
+     * @return List<ProductListDto>
+     */
+    public List<ProductListDto> findProductListByUser(ProductCondDto productCondDto){
+        return productRepository.findProductListByUser(productCondDto);
+    }
 }

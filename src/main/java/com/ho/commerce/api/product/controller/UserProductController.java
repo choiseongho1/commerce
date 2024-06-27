@@ -2,13 +2,14 @@ package com.ho.commerce.api.product.controller;
 
 import com.ho.commerce.api.product.dto.ProductCondDto;
 import com.ho.commerce.api.product.dto.ProductListDto;
-import com.ho.commerce.api.product.dto.ProductSaveDto;
 import com.ho.commerce.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -21,13 +22,13 @@ public class UserProductController {
     private final ProductService productService;
 
     /**
-     * 판매자(Seller)가 등록한 상품(Product)목록을 조회한다.
-     * @param productSaveDto
-     * @return Long ProductId
+     * 사용자(USER)는 등록된 상품(Product)목록을 조회한다.
+     * @param ProductCondDto productCondDto
+     * @return List<ProductListDto>
      */
     @GetMapping
-    public ResponseEntity<Object> findProductListBySeller(ProductCondDto productCondDto){
-        List<ProductListDto> productList = productService.findProductListBySeller(productCondDto);
+    public ResponseEntity<Object> findProductListByUser(ProductCondDto productCondDto){
+        List<ProductListDto> productList = productService.findProductListByUser(productCondDto);
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 

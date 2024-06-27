@@ -8,4 +8,5 @@ import java.util.List;
 public interface ProductDslRepository {
 
     List<ProductListDto> findProductListBySeller(ProductCondDto productCondDto);
+    List<ProductListDto> findProductListByUser(ProductCondDto productCondDto);
 }
