@@ -29,4 +29,12 @@ public class MemberSaveDto {
                 .build();
     }
 
+    public void toEntity(Member member){
+        if(member == null ) return;
+        member.setRole(this.role);
+        member.setMoblNo(this.moblNo);
+        member.setAddr(this.addr);
+
+    }
+
 }

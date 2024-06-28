@@ -3,13 +3,18 @@ package com.ho.commerce.api.member.serivce;
 import com.ho.commerce.api.cart.domain.Cart;
 import com.ho.commerce.api.cart.repository.CartRepository;
 import com.ho.commerce.api.member.domain.Member;
+import com.ho.commerce.api.member.dto.MemberCondDto;
+import com.ho.commerce.api.member.dto.MemberDtlDto;
+import com.ho.commerce.api.member.dto.MemberListDto;
 import com.ho.commerce.api.member.dto.MemberSaveDto;
 import com.ho.commerce.api.member.repository.MemberRepository;
 import com.ho.commerce.common.exception.CustomException;
 import com.ho.commerce.common.utils.EncoderUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,5 +72,47 @@ public class MemberService {
         return saveMember.getMemberId();
     }
 
+
+
+    /* ----------------- admin ---------------------*/
+
+    /**
+     * 관리자(ADMIN)은 사용자들(Seller + User)목록을 조회한다.
+     * @param memberCondDto
+     * @return List<MemberListDto>
+     */
+    public List<MemberListDto> findMemberListByAdmin(MemberCondDto memberCondDto){
+        return memberRepository.findMemberListByAdmin(memberCondDto);
+    }
+
+    /**
+     * 관리자(ADMIN)는 MemberId를 사용하여 사용자 정보를 조회할 수 있다.
+     * @param String memberId
+     * @return MemberDtlDto
+     */
+    public MemberDtlDto findMemberInfoByAdmin(String memberId){
+        if(StringUtils.isEmpty(memberId)) {
+            throw new CustomException("MemberId가 존재하지 않습니다.");
+        }
+
+        return memberRepository.findMemberInfoByAdmin(memberId);
+    }
+
+    /**
+     * 관리자(ADMIN)는 MemberId를 사용하여 사용자 정보를 조회할 수 있다.
+     * @param String memberId
+     */
+    public void updateMemberInfoByAdmin(MemberSaveDto memberSaveDto){
+        // memberId로 기존 회원 정보를 조회
+        Optional<Member> opMember = memberRepository.findById(memberSaveDto.getMemberId());
+
+        // memberId가 이미 존재하면 Exception 실행
+        if(!opMember.isPresent()) throw new CustomException("MemberId가 존재하지 않습니다.");
+
+        Member findMember = opMember.orElseThrow();
+        memberSaveDto.toEntity(findMember);
+        memberRepository.save(findMember);
+
+    }
     
 }

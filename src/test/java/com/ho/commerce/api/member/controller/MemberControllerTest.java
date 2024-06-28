@@ -1,8 +1,5 @@
 package com.ho.commerce.api.member.controller;
 
-import com.ho.commerce.api.member.domain.Member;
-import com.ho.commerce.api.member.dto.MemberSaveDto;
-import com.ho.commerce.api.member.repository.MemberRepository;
 import com.ho.commerce.api.member.serivce.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,16 +9,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.BDDMockito.given;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(MemberController.class)
+@WebMvcTest(AdminMemberController.class)
 class MemberControllerTest {
 
     /**
