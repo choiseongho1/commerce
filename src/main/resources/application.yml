@@ -1,4 +1,13 @@
 spring:
+  profiles:
+    active: local # default profile
+    group:
+      local:
+        - common
+      prod:
+        - common
+---
+spring:
   config:
     activate:
       on-profile: local
@@ -12,7 +21,25 @@ spring:
       ddl-auto: update
     show-sql: true
 
+jwt:
+  expiration_time: 86400000 #1일
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
 
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://commerce-database:3306/commerce
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
 jwt:
   expiration_time: 86400000 #1일
