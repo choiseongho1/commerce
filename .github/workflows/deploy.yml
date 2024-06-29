@@ -37,11 +37,15 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no build/libs/*.jar ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/app.jar
 
-    - name: Deploy to EC2
+    - name: Deploy to EC2 and run Docker Compose
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          cd /path/to/docker-compose/directory
+          docker-compose down
+          docker-compose build
+          docker-compose up -d
           sudo systemctl stop myapp.service || true
           sudo mv /home/ec2-user/app.jar /var/myapp/app.jar
           sudo systemctl start myapp.service
