@@ -25,6 +25,7 @@ repositories {
 
 bootJar { // jar파일 설정
     archiveFileName = 'app.jar'
+    mainClassName = "com.ho.commerce"
 }
 
 
