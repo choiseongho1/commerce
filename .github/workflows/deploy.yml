@@ -35,6 +35,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
+        ls build/libs/*.jar  # JAR 파일이 올바르게 생성되었는지 확인
         scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no build/libs/*.jar ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/app.jar
 
     - name: Deploy to EC2 and run Docker Compose
