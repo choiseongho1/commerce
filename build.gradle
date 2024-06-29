@@ -27,9 +27,9 @@ bootJar { // jar파일 설정
     archiveFileName = 'app.jar'
 }
 
-springBoot {
-    mainClassName = "com.ho.commerce" // 메인 클래스를 실제 메인 클래스 이름으로 변경
-}
+//springBoot {
+//    mainClassName = "com.ho.commerce" // 메인 클래스를 실제 메인 클래스 이름으로 변경
+//}
 
 
 dependencies {
