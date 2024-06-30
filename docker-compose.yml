@@ -23,6 +23,7 @@ services:                                               # 이 항목 밑에 실�
     environment:
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SERVER_PORT=8081  # Spring Boot 애플리케이션의 포트를 8081로 설정
     ports:
       - "8081:8081"
     restart: always # depends on은 실행 순서만 컨트롤 할뿐,
