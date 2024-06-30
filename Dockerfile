@@ -3,4 +3,4 @@ ENV SERVER_PORT=8081
 ARG JAR_FILE=build/libs/app.jar
 COPY ${JAR_FILE} ./app.jar
 ENV TZ=Asia/Seoul
-ENTRYPOINT ["java", "-jar", "./app.jar"]
+ENTRYPOINT ["java", "-jar", "./app.jar", "--server.port=${SERVER_PORT}"]

@@ -41,6 +41,9 @@ spring:
       ddl-auto: update
     show-sql: true
 
+server:
+  port: 8081
+
 jwt:
   expiration_time: 86400000 #1일
   secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
