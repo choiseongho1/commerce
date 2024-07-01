@@ -24,6 +24,11 @@ public class CartItemService {
     private final ProductRepository productRepository;
     private final CartItemRepository cartItemRepository;
 
+    /**
+     * 사용자(User)는 상품(Product)를 장바구니(Cart)에 추가할 수 있다.
+     * @param cartItemAddDto
+     * @return
+     */
     @Transactional
     public Long createCartItemByUser(CartItemAddDto cartItemAddDto){
 
@@ -43,5 +48,19 @@ public class CartItemService {
         CartItem saveCartItem = cartItemRepository.save(addCartItem);
 
         return saveCartItem.getCartItemId();
+    }
+
+    /**
+     * 사용자(User)는 장바구니(Cart)에 담긴 상품(Product)를 삭제한다.
+     * @param cartItemId
+     */
+    @Transactional
+    public void deleteCartItemByUser(Long cartItemId){
+        // cartItemId로 장바구니 상품 정보를 조회한다.
+        Optional<CartItem> opCartItem = cartItemRepository.findById(cartItemId);
+        if(opCartItem.isEmpty()) throw new CustomException("올바른 장바구니 상품이 아닙니다.");
+
+        CartItem cartItem = opCartItem.orElseThrow();
+        cartItemRepository.delete(cartItem);
     }
 }
