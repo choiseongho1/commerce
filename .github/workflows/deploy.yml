@@ -28,26 +28,31 @@ jobs:
       - name: Verify build output
         run: ls -la build/libs
 
-      - name: Copy JAR file via rsync
+      - name: Build Docker image
+        run: docker build -t my-app:latest .
+
+      - name: Push Docker image to ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+          docker tag my-app:latest ${{ secrets.ECR_REGISTRY }}/my-app:latest
+          docker push ${{ secrets.ECR_REGISTRY }}/my-app:latest
+
+      - name: Deploy to EC2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ls build/libs/*.jar  # JAR 파일이 올바르게 생성되었는지 확인
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" build/libs/app.jar ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/app.jar
-
-      - name: Move JAR file and run Docker Compose
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            # Remove the old application JAR file
             sudo systemctl stop myapp.service || true
-            sudo mv /home/ec2-user/app.jar /var/myapp/app.jar
-            cd /home/ec2-user/commerce  # 실제 Docker Compose 설정 파일이 있는 디렉토리 경로로 변경
+            sudo rm -f /var/myapp/app.jar
+            sudo rm -rf /var/myapp
+
+            # Deploy the new Docker-based application
+            cd /home/ec2-user/commerce
             sudo docker-compose down
-            sudo docker-compose build
+            sudo docker-compose pull
             sudo docker-compose up -d
-            sudo systemctl start myapp.service
           EOF
