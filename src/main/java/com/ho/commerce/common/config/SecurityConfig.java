@@ -20,8 +20,6 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -35,7 +33,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .cors(withDefaults())  // CORS 설정 추가
+                .cors().and()  // CORS 설정 추가
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/default/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
