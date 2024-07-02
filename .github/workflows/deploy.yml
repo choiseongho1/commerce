@@ -43,11 +43,9 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            sudo systemctl stop myapp.service || true
             sudo mv /home/ec2-user/app.jar /var/myapp/app.jar
             cd /home/ec2-user/commerce  # 실제 Docker Compose 설정 파일이 있는 디렉토리 경로로 변경
             sudo docker-compose down
             sudo docker-compose build
             sudo docker-compose up -d
-            sudo systemctl start myapp.service
           EOF
