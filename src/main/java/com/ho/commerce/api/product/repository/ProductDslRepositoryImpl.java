@@ -27,7 +27,8 @@ public class ProductDslRepositoryImpl implements ProductDslRepository {
                                 product.description,
                                 product.price,
                                 product.stockQuantity,
-                                product.category.categoryId
+                                product.category.categoryId,
+                                product.imgUrl
                         )
                 )
                 .from(product)
@@ -47,7 +48,8 @@ public class ProductDslRepositoryImpl implements ProductDslRepository {
                                 product.description,
                                 product.price,
                                 product.stockQuantity,
-                                product.category.categoryId
+                                product.category.categoryId,
+                                product.imgUrl
                         )
                 )
                 .from(product)

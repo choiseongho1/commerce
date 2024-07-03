@@ -15,6 +15,8 @@ public class ProductSaveDto {
     private String description;
     private Integer price;
     private Integer stockQuantity;
+    private String imgUrl;
+
     private Long categoryId;
     private String memberId;
 
@@ -24,6 +26,7 @@ public class ProductSaveDto {
                 .description(this.description)
                 .price(this.price)
                 .stockQuantity(this.stockQuantity)
+                .imgUrl(this.imgUrl)
                 .build();
     }
 
@@ -33,7 +36,8 @@ public class ProductSaveDto {
         product.setName(this.name);
         product.setDescription(this.description);
         product.setPrice(this.price);
-        product.setStockQuantity(this.price);
+        product.setStockQuantity(this.stockQuantity);
+        product.setImgUrl(this.imgUrl);
     }
 
 }

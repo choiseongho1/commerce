@@ -28,7 +28,7 @@ public class Product  extends BaseTimeEntity implements Persistable<Long> {
     private Integer price;
     private Integer stockQuantity;
     private String delYn;
-
+    private String imgUrl;
     @ManyToOne
     @JoinColumn(name = "categoryId")
     private Category category;

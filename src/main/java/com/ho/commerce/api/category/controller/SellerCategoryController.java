@@ -25,7 +25,7 @@ public class SellerCategoryController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<Object> createCategoryInfo(){
+    public ResponseEntity<Object> findCategoryList(){
         List<CategoryListDto> categoryList = categoryService.findCategoryList();
         return new ResponseEntity<>(categoryList, HttpStatus.OK);
     }
