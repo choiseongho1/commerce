@@ -6,6 +6,7 @@ import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.repository.MemberRepository;
 import com.ho.commerce.api.product.domain.Product;
 import com.ho.commerce.api.product.dto.ProductCondDto;
+import com.ho.commerce.api.product.dto.ProductDto;
 import com.ho.commerce.api.product.dto.ProductListDto;
 import com.ho.commerce.api.product.dto.ProductSaveDto;
 import com.ho.commerce.api.product.repository.ProductRepository;
@@ -46,8 +47,10 @@ public class ProductService {
         if(opCategory.isEmpty()) throw new CustomException("올바른 Category정보가 아닙니다.");
 
         Category findCategory = opCategory.orElseThrow();
+        Member findMember = opMember.orElseThrow();
         Product product = productSaveDto.toEntity();
 
+        product.setMember(findMember);
         product.setCategory(findCategory);
 
         Product saveProduct = productRepository.save(product);
@@ -96,6 +99,15 @@ public class ProductService {
     }
 
     /**
+     * 판매자(Seller)가 등록한 상품(Product)을 상세 조회한다.
+     * @param Long productId
+     * @return ProductDto productInfo
+     */
+    public ProductDto findProductInfoBySeller(Long productId){
+        return productRepository.findProductInfoBySeller(productId);
+    }
+
+    /**
      * 판매자(Seller)가 상품(Product)를 삭제한다.
      * - 상품(product) 정보가 올바르지 않은 경우 Exception
      * @param Long productId
@@ -119,5 +131,14 @@ public class ProductService {
      */
     public List<ProductListDto> findProductListByUser(ProductCondDto productCondDto){
         return productRepository.findProductListByUser(productCondDto);
+    }
+
+    /**
+     * 사용자(User)가 등록한 상품(Product)을 상세 조회한다.
+     * @param Long productId
+     * @return ProductDto productInfo
+     */
+    public ProductDto findProductInfoByUser(Long productId){
+        return productRepository.findProductInfoByUser(productId);
     }
 }

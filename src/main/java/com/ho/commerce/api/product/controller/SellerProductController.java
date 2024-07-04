@@ -1,9 +1,11 @@
 package com.ho.commerce.api.product.controller;
 
 import com.ho.commerce.api.product.dto.ProductCondDto;
+import com.ho.commerce.api.product.dto.ProductDto;
 import com.ho.commerce.api.product.dto.ProductListDto;
 import com.ho.commerce.api.product.dto.ProductSaveDto;
 import com.ho.commerce.api.product.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +28,9 @@ public class SellerProductController {
      * @return Long ProductId
      */
     @PostMapping
-    public ResponseEntity<Long> createProductBySeller(@RequestBody ProductSaveDto productSaveDto){
+    public ResponseEntity<Long> createProductBySeller(@RequestBody ProductSaveDto productSaveDto, HttpServletRequest request){
+
+        productSaveDto.setMemberIdFromRequest(request);
 
         Long productId = productService.createProductBySeller(productSaveDto);
         return new ResponseEntity<>(productId, HttpStatus.CREATED);
@@ -50,9 +54,23 @@ public class SellerProductController {
      * @return Long ProductId
      */
     @GetMapping
-    public ResponseEntity<Object> findProductListBySeller(ProductCondDto productCondDto){
+    public ResponseEntity<Object> findProductListBySeller(ProductCondDto productCondDto, HttpServletRequest request){
+
+        productCondDto.setMemberIdFromRequest(request);
+
         List<ProductListDto> productList = productService.findProductListBySeller(productCondDto);
         return new ResponseEntity<>(productList, HttpStatus.OK);
+    }
+
+    /**
+     * 판매자(Seller)가 등록한 상품(Product)을 상세 조회한다.
+     * @param Long productId
+     * @return ProductDto productInfo
+     */
+    @GetMapping("/{productId}")
+    public ResponseEntity<Object> findProductInfoBySeller(@PathVariable Long productId){
+        ProductDto productInfo = productService.findProductInfoBySeller(productId);
+        return new ResponseEntity<>(productInfo, HttpStatus.OK);
     }
 
     @DeleteMapping("/{productId}")

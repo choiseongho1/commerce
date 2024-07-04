@@ -1,6 +1,7 @@
 package com.ho.commerce.api.product.dto;
 
 import com.ho.commerce.api.product.domain.Product;
+import com.ho.commerce.common.dto.BaseDto;
 import lombok.*;
 
 @Getter
@@ -8,7 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductSaveDto {
+public class ProductSaveDto extends BaseDto {
 
     private Long productId;
     private String name;
@@ -18,7 +19,6 @@ public class ProductSaveDto {
     private String imgUrl;
 
     private Long categoryId;
-    private String memberId;
 
     public Product toEntity(){
         return Product.builder()

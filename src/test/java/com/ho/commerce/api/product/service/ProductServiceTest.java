@@ -80,8 +80,9 @@ class ProductServiceTest {
         ProductSaveDto productSaveDto = ProductSaveDto.builder()
                 .name("Product A")
                 .categoryId(saveCategory.getCategoryId())
-                .memberId(saveMember.getMemberId())
                 .build();
+
+        productSaveDto.setMemberId(saveMember.getMemberId());
 
         Product product = productSaveDto.toEntity();
 

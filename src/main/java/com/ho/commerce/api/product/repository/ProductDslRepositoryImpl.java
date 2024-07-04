@@ -1,8 +1,10 @@
 package com.ho.commerce.api.product.repository;
 
 import com.ho.commerce.api.product.dto.ProductCondDto;
+import com.ho.commerce.api.product.dto.ProductDto;
 import com.ho.commerce.api.product.dto.ProductListDto;
 import com.ho.commerce.api.product.dto.QProductListDto;
+import com.ho.commerce.api.product.dto.QProductDto;
 import com.ho.commerce.common.utils.QuerydslUtil;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +59,46 @@ public class ProductDslRepositoryImpl implements ProductDslRepository {
                         QuerydslUtil.eq(product.category.categoryId, productCondDto.getCategoryId())
                 )
                 .fetch();
+    }
+
+
+    public ProductDto findProductInfoBySeller(Long productId){
+        return queryFactory
+                .select(
+                        new QProductDto(
+                                product.productId,
+                                product.name,
+                                product.description,
+                                product.price,
+                                product.stockQuantity,
+                                product.category.categoryId,
+                                product.imgUrl
+                        )
+                )
+                .from(product)
+                .where(
+                        product.productId.eq(productId)
+                )
+                .fetchFirst();
+    }
+
+    public ProductDto findProductInfoByUser(Long productId){
+        return queryFactory
+                .select(
+                        new QProductDto(
+                                product.productId,
+                                product.name,
+                                product.description,
+                                product.price,
+                                product.stockQuantity,
+                                product.category.categoryId,
+                                product.imgUrl
+                        )
+                )
+                .from(product)
+                .where(
+                        product.productId.eq(productId)
+                )
+                .fetchFirst();
     }
 }

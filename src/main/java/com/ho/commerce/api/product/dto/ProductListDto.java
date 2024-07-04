@@ -1,5 +1,6 @@
 package com.ho.commerce.api.product.dto;
 
+import com.ho.commerce.common.dto.BaseDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
@@ -7,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 @NoArgsConstructor
-public class ProductListDto {
+public class ProductListDto extends BaseDto {
 
     private Long productId;
     private String name;
