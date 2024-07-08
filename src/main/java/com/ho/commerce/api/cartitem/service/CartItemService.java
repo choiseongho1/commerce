@@ -2,6 +2,7 @@ package com.ho.commerce.api.cartitem.service;
 
 import com.ho.commerce.api.cartitem.domain.CartItem;
 import com.ho.commerce.api.cartitem.dto.CartItemAddDto;
+import com.ho.commerce.api.cartitem.dto.CartItemListDto;
 import com.ho.commerce.api.cartitem.repository.CartItemRepository;
 import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.repository.MemberRepository;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,12 +57,25 @@ public class CartItemService {
      * @param cartItemId
      */
     @Transactional
-    public void deleteCartItemByUser(Long cartItemId){
+    public void deleteCartItemByUser(Long memberId){
         // cartItemId로 장바구니 상품 정보를 조회한다.
-        Optional<CartItem> opCartItem = cartItemRepository.findById(cartItemId);
+        Optional<CartItem> opCartItem = cartItemRepository.findById(memberId);
         if(opCartItem.isEmpty()) throw new CustomException("올바른 장바구니 상품이 아닙니다.");
 
         CartItem cartItem = opCartItem.orElseThrow();
         cartItemRepository.delete(cartItem);
+    }
+
+    /**
+     * 사용자(User)는 장바구니(Cart)에 담긴 상품(Product)을 조회한다.
+     * @param memberId
+     */
+    @Transactional
+    public List<CartItemListDto> findCartItemListByUser(String memberId){
+        // MemberId로 사용자의 정보를 저장한다.
+        Optional<Member> opMember = memberRepository.findById(memberId);
+        if(opMember.isEmpty()) throw new CustomException("올바른 사용자 정보가 아닙니다.");
+
+        return cartItemRepository.findCartItemListByUser(memberId);
     }
 }

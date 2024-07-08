@@ -1,6 +1,7 @@
 package com.ho.commerce.api.cartitem.dto;
 
 import com.ho.commerce.api.cartitem.domain.CartItem;
+import com.ho.commerce.common.dto.BaseDto;
 import lombok.*;
 
 @Getter
@@ -8,9 +9,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartItemAddDto {
+public class CartItemAddDto extends BaseDto {
 
-    private String memberId;
     private Long productId;
     private Integer quantity;
 

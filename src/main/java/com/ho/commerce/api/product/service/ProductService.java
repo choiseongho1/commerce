@@ -4,6 +4,9 @@ import com.ho.commerce.api.category.domain.Category;
 import com.ho.commerce.api.category.repository.CategoryRepository;
 import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.repository.MemberRepository;
+import com.ho.commerce.api.option.domain.Option;
+import com.ho.commerce.api.option.dto.OptionSaveDto;
+import com.ho.commerce.api.option.repository.OptionRepository;
 import com.ho.commerce.api.product.domain.Product;
 import com.ho.commerce.api.product.dto.ProductCondDto;
 import com.ho.commerce.api.product.dto.ProductDto;
@@ -26,6 +29,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
+    private final OptionRepository optionRepository;
 
     /*----------------- Admin ------------------*/
 
@@ -54,6 +58,14 @@ public class ProductService {
         product.setCategory(findCategory);
 
         Product saveProduct = productRepository.save(product);
+
+        for(OptionSaveDto dto : productSaveDto.getOptions()){
+            Option option = dto.toEntity();
+
+            option.setProduct(saveProduct);
+            optionRepository.save(option);
+        }
+
         return saveProduct.getProductId();
     }
 
@@ -86,6 +98,13 @@ public class ProductService {
         }
 
         Product saveProduct = productRepository.save(findProduct);
+
+        for(OptionSaveDto dto : productSaveDto.getOptions()){
+            Option option = dto.toEntity();
+
+            option.setProduct(saveProduct);
+            optionRepository.save(option);
+        }
         return saveProduct.getProductId();
     }
 

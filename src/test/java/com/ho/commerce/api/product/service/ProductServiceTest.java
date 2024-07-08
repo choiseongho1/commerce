@@ -4,6 +4,9 @@ import com.ho.commerce.api.category.domain.Category;
 import com.ho.commerce.api.category.repository.CategoryRepository;
 import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.repository.MemberRepository;
+import com.ho.commerce.api.option.domain.Option;
+import com.ho.commerce.api.option.dto.OptionSaveDto;
+import com.ho.commerce.api.option.repository.OptionRepository;
 import com.ho.commerce.api.product.domain.Product;
 import com.ho.commerce.api.product.dto.ProductSaveDto;
 import com.ho.commerce.api.product.repository.ProductRepository;
@@ -16,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +38,9 @@ class ProductServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private OptionRepository optionRepository;
 
 
     // Product 저장 메소드 추가
@@ -170,5 +178,69 @@ class ProductServiceTest {
         Assertions.assertEquals(saveProduct.getName(), "Product B");
     }
 
+
+    @Test
+    @DisplayName("Seller create Product with Options")
+    public void testCreateProductBySellerWithOptions() {
+        // given
+        Member member = Member.builder()
+                .memberId("memberId")
+                .name("A")
+                .build();
+
+        Member saveMember = memberRepository.save(member);
+
+        Category category = Category.builder()
+                .name("Category A")
+                .build();
+
+        Category saveCategory = categoryRepository.save(category);
+
+        ProductSaveDto productSaveDto = ProductSaveDto.builder()
+                .name("Product A")
+                .categoryId(saveCategory.getCategoryId())
+                .build();
+
+        List<OptionSaveDto> optionSaveDtoList = new ArrayList<>();
+        for(int i = 0 ; i < 10; i++){
+            OptionSaveDto optionDto = OptionSaveDto.builder()
+                    .name("optionName"+i)
+                    .additionalPrice(i*1000)
+                    .build();
+
+            optionSaveDtoList.add(optionDto);
+        }
+
+        productSaveDto.setOptions(optionSaveDtoList);
+
+        productSaveDto.setMemberId(saveMember.getMemberId());
+
+        Product product = productSaveDto.toEntity();
+
+        // 사용자의 Member 정보를 조회한다.
+        Member findMember = memberRepository.findById(productSaveDto.getMemberId()).orElseThrow();
+
+        product.setMember(findMember);
+
+        // 사용자가 선택한 category 정보를 조회한다.
+        Category findCategory = categoryRepository.findById(productSaveDto.getCategoryId()).orElseThrow();
+
+        product.setCategory(findCategory);
+
+        // when
+        Product saveProduct = productRepository.save(product);
+
+        for(OptionSaveDto dto : productSaveDto.getOptions()){
+            Option option = dto.toEntity();
+            option.setProduct(saveProduct);
+
+            optionRepository.save(option);
+        }
+
+        // then
+        Assertions.assertNotNull(saveProduct);
+        Assertions.assertEquals(saveProduct.getCategory(), findCategory);
+
+    }
 
 }

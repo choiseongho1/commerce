@@ -1,8 +1,12 @@
 package com.ho.commerce.api.product.dto;
 
+import com.ho.commerce.api.option.dto.OptionSaveDto;
 import com.ho.commerce.api.product.domain.Product;
 import com.ho.commerce.common.dto.BaseDto;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +23,7 @@ public class ProductSaveDto extends BaseDto {
     private String imgUrl;
 
     private Long categoryId;
+    private List<OptionSaveDto> options = new ArrayList<>();
 
     public Product toEntity(){
         return Product.builder()
