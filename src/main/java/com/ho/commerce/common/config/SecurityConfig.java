@@ -37,18 +37,25 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("Configuring security filter chain");
         http.csrf().disable()
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/default/**").permitAll()
-                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/seller/**").hasAuthority("ROLE_SELLER")
-                        .requestMatchers("/user/**").hasAuthority("ROLE_USER")
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .cors(cors -> {
+                    cors.configurationSource(corsConfigurationSource());
+                    log.info("CORS configuration source set");
+                })
+                .authorizeHttpRequests(authorize -> {
+                    authorize.requestMatchers("/default/**").permitAll()
+                            .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers("/seller/**").hasAuthority("ROLE_SELLER")
+                            .requestMatchers("/user/**").hasAuthority("ROLE_USER")
+                            .anyRequest().authenticated();
+                    log.info("Authorization configuration set");
+                })
+                .sessionManagement(session -> {
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    log.info("Session management set to stateless");
+                });
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        log.info("Security filter chain configured");
+        log.info("JWT request filter added");
 
         return http.build();
     }
