@@ -50,7 +50,8 @@ jwt:
 
 
 logging:
-  file:
-    name: /var/log/myapp.log
   level:
-    root: DEBUG
+    root: INFO
+    org.springframework.web: DEBUG
+  file:
+    name: /var/log/myapp/spring-boot-application.log
