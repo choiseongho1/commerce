@@ -43,6 +43,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            sudo mkdir -p /var/myapp
             sudo mv /home/ec2-user/app.jar /var/myapp/app.jar
             sudo systemctl daemon-reload
             sudo systemctl restart myapp
