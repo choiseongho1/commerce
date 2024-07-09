@@ -31,21 +31,33 @@ jobs:
       - name: Copy JAR file via rsync
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ls build/libs/*.jar  # JAR 파일이 올바르게 생성되었는지 확인
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" build/libs/app.jar ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/app.jar
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" build/libs/app.jar ec2-user@$EC2_HOST:/home/ec2-user/app.jar
 
-      - name: Move JAR file and run Docker Compose
+      - name: Run Docker Compose on EC2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            sudo mv /home/ec2-user/app.jar /var/myapp/app.jar
-            cd /home/ec2-user/commerce  # 실제 Docker Compose 설정 파일이 있는 디렉토리 경로로 변경
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_HOST << 'EOF'
+            set -e
+            if [ -d "/home/ec2-user/commerce" ]; then
+              cd /home/ec2-user/commerce
+              git pull
+            else
+              git clone https://github.com/choiseongho1/commerce.git /home/ec2-user/commerce
+              cd /home/ec2-user/commerce
+            fi
+
+            # Docker Compose 실행
             sudo docker-compose down
             sudo docker-compose build
             sudo docker-compose up -d
+
+            echo "Deployment finished."
           EOF
