@@ -47,7 +47,7 @@ jobs:
           scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa commerce-app.tar ec2-user@$EC2_HOST:/home/ec2-user/
           scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@$EC2_HOST:/home/ec2-user/docker-compose.yml
           scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa .env ec2-user@$EC2_HOST:/home/ec2-user/.env
-          scp -o StrictHostKeyChecking-no -i ~/.ssh/id_rsa -r database ec2-user@$EC2_HOST:/home/ec2-user/
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r database ec2-user@$EC2_HOST:/home/ec2-user/
 
       - name: Load Docker image and deploy containers on EC2
         env:
