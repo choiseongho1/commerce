@@ -77,7 +77,7 @@ public class SecurityConfig {
         log.info("Configuring CORS");
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://43.202.204.185"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://43.202.204.185")); // 프론트엔드 URL 추가
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setMaxAge(3600L);
