@@ -45,6 +45,17 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
             sudo mkdir -p /var/myapp
             sudo mv /home/ec2-user/app.jar /var/myapp/app.jar
+            echo '[Unit]
+            Description=My Spring Boot Application
+            After=network.target
+
+            [Service]
+            User=ec2-user
+            ExecStart=/usr/bin/java -jar /var/myapp/app.jar
+            SuccessExitStatus=143
+
+            [Install]
+            WantedBy=multi-user.target' | sudo tee /etc/systemd/system/myapp.service
             sudo systemctl daemon-reload
             sudo systemctl restart myapp
           EOF
