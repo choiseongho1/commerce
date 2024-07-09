@@ -34,7 +34,7 @@ jobs:
       - name: Save Docker image to a file
         run: docker save -o commerce-app.tar commerce-app
 
-      - name: Copy Docker image via SSH
+      - name: Copy Docker image and necessary files via SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
@@ -60,6 +60,11 @@ jobs:
               git clone https://github.com/choiseongho1/commerce.git ~/commerce
               cd ~/commerce
             fi
+
+            # 빌드 디렉토리로 이동하여 Gradle 빌드
+            cd ~/commerce
+            chmod +x ./gradlew
+            ./gradlew bootJar
 
             # Docker 이미지 로드
             docker load -i ~/commerce-app.tar
