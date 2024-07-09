@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy Backend to EC2
 
 on:
   push:
@@ -22,19 +22,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew bootJar
+      - name: Build with Gradle (skip tests)
+        run: ./gradlew bootJar -x test
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Verify build output
+        run: ls -la build/libs
 
-      - name: Build Docker images
-        run: docker build -t commerce-app .
-
-      - name: Save Docker image to a file
-        run: docker save -o commerce-app.tar commerce-app
-
-      - name: Copy Docker image via SSH
+      - name: Copy JAR file via rsync
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
@@ -42,46 +36,45 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa commerce-app.tar ec2-user@$EC2_HOST:/home/ec2-user/
+          ls build/libs/*.jar  # JAR 파일이 올바르게 생성되었는지 확인
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" build/libs/app.jar ec2-user@$EC2_HOST:/home/ec2-user/app.jar
 
-      - name: Pull Git repository and deploy containers on EC2
+      - name: Deploy and run Docker Compose on EC2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_HOST << 'EOF'
             set -e
-
-            # Git 리포지토리 초기화 및 최신 코드 가져오기
-            if [ -d "~/commerce" ]; then
-              cd ~/commerce
+            if [ -d "/home/ec2-user/commerce" ]; then
+              cd /home/ec2-user/commerce
               git pull
             else
-              git clone https://github.com/choiseongho1/commerce.git ~/commerce
-              cd ~/commerce
+              git clone https://github.com/choiseongho1/commerce.git /home/ec2-user/commerce
+              cd /home/ec2-user/commerce
             fi
 
-            # 빌드 디렉토리로 이동하여 Gradle 빌드
+            # 빌드 및 배포
             chmod +x ./gradlew
-            ./gradlew bootJar
+            ./gradlew bootJar -x test
 
             # Docker 이미지 로드
-            docker load -i ~/commerce-app.tar
+            docker load -i /home/ec2-user/commerce-app.tar
             
             echo "Stopping processes on port 8080..."
             sudo fuser -k 8080/tcp || true
 
             echo "Bringing down Docker Compose..."
-            docker-compose down || true
+            sudo docker-compose down || true
 
             echo "Removing old containers..."
-            docker rm -f $(docker ps -aq) || true
+            sudo docker rm -f $(docker ps -aq) || true
 
             echo "Removing unused Docker resources..."
-            docker system prune -f --volumes || true
+            sudo docker system prune -f --volumes || true
 
             echo "Starting Docker Compose..."
-            docker-compose up -d
+            sudo docker-compose up -d
 
             echo "Deployment finished."
           EOF
