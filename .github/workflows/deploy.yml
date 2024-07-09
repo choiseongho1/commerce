@@ -58,5 +58,6 @@ jobs:
             cd /home/ec2-user/
             docker load -i commerce-app.tar
             docker-compose down
+            docker rm -f $(docker ps -aq)
             docker-compose up -d
           EOF
