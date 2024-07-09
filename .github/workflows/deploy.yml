@@ -57,7 +57,7 @@ jobs:
               cd ~/commerce
               git pull
             else
-              git clone https://github.com/your-repo/commerce.git ~/commerce
+              git clone https://github.com/choiseongho1/commerce.git ~/commerce
               cd ~/commerce
             fi
 
