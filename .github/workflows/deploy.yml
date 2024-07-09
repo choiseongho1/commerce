@@ -60,6 +60,6 @@ jobs:
             # 종료하려는 포트를 사용하는 프로세스 식별 및 종료
             sudo fuser -k 8080/tcp
             docker-compose down
-            docker rm -f $(docker ps -aq)
+            docker rm -f $(docker ps -aq) || true
             docker-compose up -d
           EOF
