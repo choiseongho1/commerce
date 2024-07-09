@@ -57,9 +57,15 @@ jobs:
             # 포트를 사용하는 기존 프로세스 종료
             echo "Stopping processes on port 8080..."
             sudo fuser -k 8080/tcp || true
+            sleep 5  # 포트가 완전히 해제될 때까지 대기
+
+            # 기존 Docker 컨테이너와 네트워크 제거
+            echo "Removing existing Docker containers and network..."
+            sudo docker-compose down
+            sudo docker rm -f $(sudo docker ps -aq) || true
+            sudo docker network prune -f || true
 
             # Docker Compose 실행
-            sudo docker-compose down
             sudo docker-compose build
             sudo docker-compose up -d
 
