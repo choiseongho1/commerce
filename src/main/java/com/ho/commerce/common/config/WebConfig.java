@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         log.info("Adding CORS mappings");
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "http://43.202.204.185:3000") // 프론트엔드 URL 추가
+                .allowedOrigins("http://localhost:3000", "http://43.202.204.185") // 프론트엔드 URL 추가
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
@@ -36,7 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://43.202.204.185:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://43.202.204.185"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setMaxAge(3600L);
