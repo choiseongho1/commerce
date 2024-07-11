@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static com.ho.commerce.api.cartitem.domain.QCartItem.cartItem;
+import static com.ho.commerce.api.option.domain.QOption.option;
 
 @RequiredArgsConstructor
 public class CartItemDslRepositoryImpl implements CartItemDslRepository {
@@ -24,10 +25,14 @@ public class CartItemDslRepositoryImpl implements CartItemDslRepository {
                                 cartItem.product.name,
                                 cartItem.quantity,
                                 cartItem.product.price,
-                                cartItem.product.imgUrl
+                                cartItem.product.imgUrl,
+                                option.optionId,
+                                option.name,
+                                option.additionalPrice
                         )
                 )
                 .from(cartItem)
+                .leftJoin(option).on(cartItem.option.eq(option).and(cartItem.product.eq(option.product)))
                 .where(
                     cartItem.cart.member.memberId.eq(memberId)
                 )

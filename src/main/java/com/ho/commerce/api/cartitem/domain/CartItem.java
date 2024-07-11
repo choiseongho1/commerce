@@ -1,6 +1,7 @@
 package com.ho.commerce.api.cartitem.domain;
 
 import com.ho.commerce.api.cart.domain.Cart;
+import com.ho.commerce.api.option.domain.Option;
 import com.ho.commerce.api.product.domain.Product;
 import com.ho.commerce.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -26,6 +27,10 @@ public class CartItem extends BaseTimeEntity implements Persistable<Long> {
     @ManyToOne
     @JoinColumn(name = "productId")
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "optionId")
+    private Option option;
 
     private Integer quantity;
 

@@ -13,6 +13,7 @@ import com.ho.commerce.api.product.dto.ProductDto;
 import com.ho.commerce.api.product.dto.ProductListDto;
 import com.ho.commerce.api.product.dto.ProductSaveDto;
 import com.ho.commerce.api.product.repository.ProductRepository;
+import com.ho.commerce.common.dto.BaseDto;
 import com.ho.commerce.common.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,10 +61,12 @@ public class ProductService {
         Product saveProduct = productRepository.save(product);
 
         for(OptionSaveDto dto : productSaveDto.getOptions()){
-            Option option = dto.toEntity();
+            if(dto.getStatus().equals(BaseDto.Status.NEW)){
+                Option option = dto.toEntity();
 
-            option.setProduct(saveProduct);
-            optionRepository.save(option);
+                option.setProduct(saveProduct);
+                optionRepository.save(option);
+            }
         }
 
         return saveProduct.getProductId();
@@ -100,11 +103,26 @@ public class ProductService {
         Product saveProduct = productRepository.save(findProduct);
 
         for(OptionSaveDto dto : productSaveDto.getOptions()){
-            Option option = dto.toEntity();
 
-            option.setProduct(saveProduct);
-            optionRepository.save(option);
+            if(dto.getStatus().equals(BaseDto.Status.NEW)){
+                Option option = dto.toEntity();
+
+                option.setProduct(saveProduct);
+                optionRepository.save(option);
+            }
+
+            if(dto.getStatus().equals(BaseDto.Status.MODIFIED)){
+                Optional<Option> opOption = optionRepository.findById(dto.getOptionId());
+                Option findOption = opOption.orElseThrow();
+                dto.toEntity(findOption);
+                optionRepository.save(findOption);
+            }
+
+            if(dto.getStatus().equals(BaseDto.Status.DELETED)){
+                optionRepository.deleteById(dto.getOptionId());
+            }
         }
+
         return saveProduct.getProductId();
     }
 

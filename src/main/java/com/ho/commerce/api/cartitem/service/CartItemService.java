@@ -6,6 +6,8 @@ import com.ho.commerce.api.cartitem.dto.CartItemListDto;
 import com.ho.commerce.api.cartitem.repository.CartItemRepository;
 import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.member.repository.MemberRepository;
+import com.ho.commerce.api.option.domain.Option;
+import com.ho.commerce.api.option.repository.OptionRepository;
 import com.ho.commerce.api.product.domain.Product;
 import com.ho.commerce.api.product.repository.ProductRepository;
 import com.ho.commerce.common.exception.CustomException;
@@ -25,6 +27,7 @@ public class CartItemService {
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     private final CartItemRepository cartItemRepository;
+    private final OptionRepository optionRepository;
 
     /**
      * 사용자(User)는 상품(Product)를 장바구니(Cart)에 추가할 수 있다.
@@ -43,6 +46,17 @@ public class CartItemService {
         if(opProduct.isEmpty()) throw new CustomException("올바른 상품 정보가 아닙니다.");
 
         CartItem addCartItem = cartItemAddDto.toEntity();
+
+        if(cartItemAddDto.getOptionId() != null){
+            Optional<Option> opOption = optionRepository.findById(cartItemAddDto.getOptionId());
+            if(opOption.isEmpty()) throw new CustomException("올바른 옵션 정보가 아닙니다.");
+
+            addCartItem.setOption(opOption.orElseThrow());
+
+        }
+
+
+
 
         addCartItem.setCart(opMember.orElseThrow().getCart());
         addCartItem.setProduct(opProduct.orElseThrow());

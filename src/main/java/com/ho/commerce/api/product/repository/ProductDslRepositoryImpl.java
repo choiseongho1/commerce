@@ -1,14 +1,13 @@
 package com.ho.commerce.api.product.repository;
 
+import com.ho.commerce.api.option.dto.OptionDto;
 import com.ho.commerce.api.option.dto.QOptionDto;
 import com.ho.commerce.api.product.dto.*;
 import com.ho.commerce.common.utils.QuerydslUtil;
-import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.ho.commerce.api.option.domain.QOption.option;
 import static com.ho.commerce.api.product.domain.QProduct.product;
@@ -66,35 +65,34 @@ public class ProductDslRepositoryImpl implements ProductDslRepository {
     }
 
 
+//    public ProductDto findProductInfoBySeller(Long productId){
+//
+//        // Product와 Option을 조인하여 조회
+//        Map<Long, ProductDto> productMap = queryFactory
+//                .from(product)
+//                .leftJoin(product.options, option)
+//                .where(product.productId.eq(productId))
+//                .transform(GroupBy.groupBy(product.productId).as(
+//                        new QProductDto(
+//                                product.productId,
+//                                product.name,
+//                                product.description,
+//                                product.price,
+//                                product.stockQuantity,
+//                                product.category.categoryId,
+//                                product.imgUrl,
+//                                GroupBy.list(new QOptionDto(
+//                                        option.optionId,
+//                                        option.name,
+//                                        option.additionalPrice
+//                                ))
+//                        )
+//                ));
+//
+//        return productMap.get(productId);
+//    }
     public ProductDto findProductInfoBySeller(Long productId){
-
-        // Product와 Option을 조인하여 조회
-        Map<Long, ProductDto> productMap = queryFactory
-                .from(product)
-                .leftJoin(product.options, option)
-                .where(product.productId.eq(productId))
-                .transform(GroupBy.groupBy(product.productId).as(
-                        new QProductDto(
-                                product.productId,
-                                product.name,
-                                product.description,
-                                product.price,
-                                product.stockQuantity,
-                                product.category.categoryId,
-                                product.imgUrl,
-                                GroupBy.list(new QOptionDto(
-                                        option.optionId,
-                                        option.name,
-                                        option.additionalPrice
-                                ))
-                        )
-                ));
-
-        return productMap.get(productId);
-    }
-
-    public ProductDto findProductInfoByUser(Long productId){
-        return queryFactory
+        ProductDto result = queryFactory
                 .select(
                         new QProductDto(
                                 product.productId,
@@ -111,5 +109,63 @@ public class ProductDslRepositoryImpl implements ProductDslRepository {
                         product.productId.eq(productId)
                 )
                 .fetchFirst();
+
+        List<OptionDto> options = queryFactory
+                .select(
+                        new QOptionDto(
+                                option.optionId,
+                                option.name,
+                                option.additionalPrice
+                        )
+                )
+                .from(option)
+                .where(
+                        option.product.productId.eq(productId)
+                )
+                .fetch();
+
+        assert result != null;
+        result.setOptions(options);
+
+        return result;
+    }
+
+    public ProductDto findProductInfoByUser(Long productId){
+        ProductDto result = queryFactory
+                .select(
+                        new QProductDto(
+                                product.productId,
+                                product.name,
+                                product.description,
+                                product.price,
+                                product.stockQuantity,
+                                product.category.categoryId,
+                                product.imgUrl
+                        )
+                )
+                .from(product)
+                .where(
+                        product.productId.eq(productId)
+                )
+                .fetchFirst();
+
+        List<OptionDto> options = queryFactory
+                .select(
+                        new QOptionDto(
+                                option.optionId,
+                                option.name,
+                                option.additionalPrice
+                        )
+                )
+                .from(option)
+                .where(
+                        option.product.productId.eq(productId)
+                )
+                .fetch();
+
+        assert result != null;
+        result.setOptions(options);
+
+        return result;
     }
 }

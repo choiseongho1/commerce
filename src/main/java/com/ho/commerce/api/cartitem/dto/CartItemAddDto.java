@@ -13,6 +13,7 @@ public class CartItemAddDto extends BaseDto {
 
     private Long productId;
     private Integer quantity;
+    private Long optionId;
 
     public CartItem toEntity(){
         return CartItem.builder()
