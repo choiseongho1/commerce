@@ -1,4 +1,4 @@
-package com.ho.commerce.api.orderitem;
+package com.ho.commerce.api.orderitem.domain;
 
 import com.ho.commerce.api.order.domain.Order;
 import com.ho.commerce.api.product.domain.Product;

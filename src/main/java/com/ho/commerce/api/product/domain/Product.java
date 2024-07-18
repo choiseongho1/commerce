@@ -4,7 +4,7 @@ package com.ho.commerce.api.product.domain;
 import com.ho.commerce.api.category.domain.Category;
 import com.ho.commerce.api.member.domain.Member;
 import com.ho.commerce.api.option.domain.Option;
-import com.ho.commerce.api.orderitem.OrderItem;
+import com.ho.commerce.api.orderitem.domain.OrderItem;
 import com.ho.commerce.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,8 +1,10 @@
 package com.ho.commerce.api.order.domain;
 
 import jakarta.persistence.Embeddable;
+import lombok.Builder;
 
 @Embeddable
+@Builder
 public class Address {
 
     private String street;
