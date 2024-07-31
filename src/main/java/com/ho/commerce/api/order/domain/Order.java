@@ -32,8 +32,8 @@ public class Order extends BaseTimeEntity implements Persistable<String> {
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
 
-    @Embedded
-    private Address address;
+    private String address;
+    private String addressDetail;
 
     @Override
     public String getId() {

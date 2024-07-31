@@ -1,8 +1,11 @@
 package com.ho.commerce.api.option.domain;
 
+import com.ho.commerce.api.orderitem.domain.OrderItem;
 import com.ho.commerce.api.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,4 +25,7 @@ public class Option {
 
     private String name;
     private Integer additionalPrice;
+
+    @OneToMany(mappedBy = "option")
+    private List<OrderItem> orderItems;
 }

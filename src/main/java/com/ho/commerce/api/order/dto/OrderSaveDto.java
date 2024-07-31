@@ -1,6 +1,5 @@
 package com.ho.commerce.api.order.dto;
 
-import com.ho.commerce.api.order.domain.Address;
 import com.ho.commerce.api.order.domain.Order;
 import com.ho.commerce.api.orderitem.dto.OrderItemSaveDto;
 import com.ho.commerce.common.dto.BaseDto;
@@ -18,11 +17,8 @@ import java.util.List;
 public class OrderSaveDto extends BaseDto {
 
     private String orderId;
-    private String city;
-    private String country;
-    private String state;
-    private String street;
-    private String zipCode;
+    private String address;
+    private String addressDetail;
     private String orderDate;
     private String orderStatus;
 
@@ -31,16 +27,10 @@ public class OrderSaveDto extends BaseDto {
     public Order toEntity(){
         return Order.builder()
                 .orderId(this.orderId)
-                .address(
-                        Address.builder()
-                                .city(this.city)
-                                .country(this.country)
-                                .state(this.state)
-                                .street(this.street)
-                                .zipCode(this.zipCode)
-                                .build()
-                )
+                .address(this.address)
+                .addressDetail(this.addressDetail)
                 .orderDate(LocalDateTime.now())
+                .status("ordered")
                 .build();
     }
 }
